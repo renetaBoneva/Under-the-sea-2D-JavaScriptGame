@@ -67,11 +67,64 @@ class Player {
     }
 }
 const player1 = new Player();
+
 // Bubbles
+let bubbleArray = [];
+class Bubble {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = 100 + canvas.height;
+        this.radius = 50;
+        this.speed = Math.random() * 5 + 1;
+        this.distance;
+        this.counted = false;
+    }
+    update() {
+        this.y -= this.speed;
+        const dx = this.x - player1.x;
+        const dy = this.y - player1.y;
+        this.distance = Math.sqrt(dx * dx + dy * dy);
+    }
+
+    draw() {
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+        ctx.stroke();
+    }
+}
+function handleBubbles() {
+    console.log(bubbleArray);
+    if (gameFrame % 50 == 0) {
+        bubbleArray.push(new Bubble());
+    }
+
+    bubbleArray.forEach(bubble => {
+        bubble.update();
+        bubble.draw()
+    })
+    for (let i = 0; i < bubbleArray.length; i++) {
+        if (bubbleArray[i].y < 0 - this.radius * 2) {
+            bubbleArray.splice(i, 1);
+        }
+        if (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius) {
+            console.log('collision');
+            score++;
+        }
+    }
+}
+
 // Animation Loop
 function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    handleBubbles()
     player1.update();
     player1.draw();
+    ctx.fillStyle = 'black';
+    ctx.fillText('Score: ' + score, 10, 50);
+    gameFrame++;
     requestAnimationFrame(animate);
 }
 animate()
