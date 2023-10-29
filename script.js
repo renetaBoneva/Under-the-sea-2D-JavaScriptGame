@@ -26,6 +26,11 @@ canvas.addEventListener('mouseup', function (event) {
 })
 
 // Player
+// const playerRight = new Image();
+// playerRight.src = 'images/fish_swim_right.png';
+const playerLeft = new Image();
+playerLeft.src = 'images/fish_swim_left.png';
+
 class Player {
     constructor() {
         this.x = canvas.width;
@@ -64,6 +69,8 @@ class Player {
         ctx.fill();
         ctx.closePath();
         ctx.fillRect(this.x, this.y, this.radius, 10);
+
+        ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth,this.spriteHeight,this.x,this.y,this.spriteWidth/4,this.spriteHeight/4);
     }
 }
 const player1 = new Player();
