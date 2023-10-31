@@ -26,8 +26,8 @@ canvas.addEventListener('mouseup', function (event) {
 })
 
 // Player
-// const playerRight = new Image();
-// playerRight.src = 'images/fish_swim_right.png';
+const playerRight = new Image();
+playerRight.src = 'images/fish_swim_right.png';
 const playerLeft = new Image();
 playerLeft.src = 'images/fish_swim_left.png';
 
@@ -47,6 +47,8 @@ class Player {
     update() {
         const dx = this.x - mouse.X;
         const dy = this.y - mouse.Y;
+        let theta = Math.atan2(dy, dx);
+        this.angle = theta;
         if (mouse.X != this.x) {
             this.x -= dx / 30;
         }
@@ -70,7 +72,15 @@ class Player {
         ctx.closePath();
         ctx.fillRect(this.x, this.y, this.radius, 10);
 
-        ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth,this.spriteHeight,this.x,this.y,this.spriteWidth/4,this.spriteHeight/4);
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        if (this.x >= mouse.X) {
+            ctx.drawImage(playerLeft, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth / 4, this.spriteHeight / 4);
+        } else {
+            ctx.drawImage(playerRight, this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight, 0 - 60, 0 - 45, this.spriteWidth / 4, this.spriteHeight / 4);
+        }
+        ctx.restore();
     }
 }
 const player1 = new Player();
@@ -106,7 +116,8 @@ class Bubble {
 const bubblePop1 = document.createElement('audio');
 bubblePop1.src = 'audio/Plop.ogg';
 const bubblePop2 = document.createElement('audio');
-bubblePop2.src = 'audio/pop.ogg';
+// bubblePop2.src = 'audio/water_drop.mp3';
+bubblePop2.src = 'audio/pop-up.mp3';
 
 function handleBubbles() {
     if (gameFrame % 50 == 0) {
@@ -121,7 +132,7 @@ function handleBubbles() {
         if (bubbleArray[i].y < 0 - this.radius * 2) {
             bubbleArray.splice(i, 1);
         }
-        if (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius) {
+        if (bubbleArray[i] && (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius)) {
             if (!bubbleArray[i].counted) {
                 if (bubbleArray[i].sound == "sound1") {
                     bubblePop1.play();
