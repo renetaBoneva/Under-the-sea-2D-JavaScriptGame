@@ -7,6 +7,7 @@ canvas.height = 500;
 let score = 0;
 let gameFrame = 0;
 ctx.font = '50px Georgia';
+let gameSpeed = 1;
 
 // Mouse Interactivity
 let canvasPosition = canvas.getBoundingClientRect();
@@ -146,12 +147,26 @@ function handleBubbles() {
     }
 }
 
-//Repeating loop
+//Repeating background
 const background = new Image();
 background.src = 'images/background1.png';
 
+const bgr = {
+    x1: 0,
+    x2: canvas.width,
+    y: 0,
+    width: canvas.width,
+    height: canvas.height
+}
+
 function handleBackground() {
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    bgr.x1 -= gameSpeed;
+    if (bgr.x1 < -bgr.width) { bgr.x1 = bgr.width }
+    ctx.drawImage(background, bgr.x1, bgr.y, bgr.width, bgr.height);
+
+    bgr.x2 -= gameSpeed;
+    if (bgr.x2 < -bgr.width) { bgr.x2 = bgr.width }
+    ctx.drawImage(background, bgr.x2, bgr.y, bgr.width, bgr.height);
 }
 
 // Animation Loop
