@@ -116,7 +116,6 @@ class Bubble {
 const bubblePop1 = document.createElement('audio');
 bubblePop1.src = 'audio/Plop.ogg';
 const bubblePop2 = document.createElement('audio');
-// bubblePop2.src = 'audio/water_drop.mp3';
 bubblePop2.src = 'audio/pop-up.mp3';
 
 function handleBubbles() {
@@ -124,15 +123,13 @@ function handleBubbles() {
         bubbleArray.push(new Bubble());
     }
 
-    bubbleArray.forEach(bubble => {
-        bubble.update();
-        bubble.draw()
-    })
     for (let i = 0; i < bubbleArray.length; i++) {
+        bubbleArray[i].update();
+        bubbleArray[i].draw()
         if (bubbleArray[i].y < 0 - this.radius * 2) {
             bubbleArray.splice(i, 1);
-        }
-        if (bubbleArray[i] && (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius)) {
+            i--;
+        }else if (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius) {
             if (!bubbleArray[i].counted) {
                 if (bubbleArray[i].sound == "sound1") {
                     bubblePop1.play();
@@ -143,6 +140,7 @@ function handleBubbles() {
                 score++;
                 bubbleArray[i].counted = true;
                 bubbleArray.splice(i, 1);
+                i--;
             }
         }
     }
@@ -160,3 +158,7 @@ function animate() {
     requestAnimationFrame(animate);
 }
 animate()
+
+window.addEventListener("resize", () => {
+    canvasPosition = canvas.getBoundingClientRect();
+})
