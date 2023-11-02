@@ -129,7 +129,7 @@ function handleBubbles() {
         if (bubbleArray[i].y < 0 - this.radius * 2) {
             bubbleArray.splice(i, 1);
             i--;
-        }else if (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius) {
+        } else if (bubbleArray[i].distance < bubbleArray[i].radius + player1.radius) {
             if (!bubbleArray[i].counted) {
                 if (bubbleArray[i].sound == "sound1") {
                     bubblePop1.play();
@@ -146,10 +146,19 @@ function handleBubbles() {
     }
 }
 
+//Repeating loop
+const background = new Image();
+background.src = 'images/background1.png';
+
+function handleBackground() {
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+}
+
 // Animation Loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    handleBubbles()
+    handleBackground();
+    handleBubbles();
     player1.update();
     player1.draw();
     ctx.fillStyle = 'black';
