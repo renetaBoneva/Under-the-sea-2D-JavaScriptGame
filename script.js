@@ -6,8 +6,9 @@ canvas.height = 500;
 
 let score = 0;
 let gameFrame = 0;
-ctx.font = '50px Georgia';
+ctx.font = '40px Georgia';
 let gameSpeed = 1;
+let isGameOver = false;
 
 // Mouse Interactivity
 let canvasPosition = canvas.getBoundingClientRect();
@@ -66,12 +67,12 @@ class Player {
             ctx.lineTo(mouse.X, mouse.Y);
             ctx.stroke();
         }
-        ctx.fillStyle = "red";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-        ctx.fillRect(this.x, this.y, this.radius, 10);
+        // ctx.fillStyle = "red";
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        // ctx.closePath();
+        // ctx.fillRect(this.x, this.y, this.radius, 10);
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -191,10 +192,13 @@ class Enemy {
     }
 
     draw() {
-        ctx.fillStyle = "green"
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        // ctx.fillStyle = "green"
+        // ctx.beginPath();
+        // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        // ctx.fill();
+        ctx.drawImage(enemyImage,
+            this.frameX * this.spriteWidth, this.frameY * this.spriteHeight, this.spriteWidth, this.spriteHeight,
+            this.x - 50, this.y - 55, this.spriteWidth / 4, this.spriteHeight / 4);
     }
     update() {
         this.x -= this.speed;
@@ -203,12 +207,52 @@ class Enemy {
             this.y = Math.random() * (canvas.height - 150) + 90;
             this.speed = Math.random() * 2 + 2;
         }
+        // Animation
+        if (gameFrame % 5 == 0) {
+            this.frame++;
+            if (this.frame >= 12) {
+                this.frame = 0
+            }
+            if (this.frame == 3 || this.frame == 7 || this.frame == 11) {
+                this.frameX = 0;
+            } else {
+                this.frameX++;
+            }
+
+            if (this.frame < 3) {
+                this.frameY = 0;
+            } else if (this.frame < 7) {
+                this.frameY = 1;
+            } else if (this.frame < 11) {
+                this.frameY = 2;
+            } else {
+                this.frameY = 0;
+            }
+        }
+
+        // collision with player
+        const dx = this.x - player1.x;
+        const dy = this.y - player1.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < this.radius + player1.radius -20) {
+            handleGameOver();
+        }
+
     }
 }
 const enemy1 = new Enemy();
-function handleEnemy(){
+function handleEnemy() {
     enemy1.update();
     enemy1.draw();
+}
+
+
+function handleGameOver() {
+    ctx.fillStyle = 'white'
+    ctx.fillText("GAME OVER", 200, 200);
+    ctx.fillText("You reached score: " + score, 150, 250);
+    isGameOver = true;
 }
 
 // Animation Loop
@@ -222,7 +266,7 @@ function animate() {
     ctx.fillStyle = 'black';
     ctx.fillText('Score: ' + score, 10, 50);
     gameFrame++;
-    requestAnimationFrame(animate);
+    if(!isGameOver) requestAnimationFrame(animate);
 }
 animate()
 
