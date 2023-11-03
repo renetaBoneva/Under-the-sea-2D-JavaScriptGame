@@ -173,6 +173,44 @@ function handleBackground() {
     ctx.drawImage(background, bgr.x2, bgr.y, bgr.width, bgr.height);
 }
 
+// Enemies
+const enemyImage = new Image();
+enemyImage.src = "images/enemy1.png";
+
+class Enemy {
+    constructor() {
+        this.x = canvas.width + 200;
+        this.y = Math.random() * (canvas.height - 150) + 90;
+        this.speed = Math.random() * 2 + 2;
+        this.radius = 60;
+        this.frame = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.spriteWidth = 418;
+        this.spriteHeight = 397;
+    }
+
+    draw() {
+        ctx.fillStyle = "green"
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    update() {
+        this.x -= this.speed;
+        if (this.x < 0 - this.radius * 2) {
+            this.x = canvas.width + 200;
+            this.y = Math.random() * (canvas.height - 150) + 90;
+            this.speed = Math.random() * 2 + 2;
+        }
+    }
+}
+const enemy1 = new Enemy();
+function handleEnemy(){
+    enemy1.update();
+    enemy1.draw();
+}
+
 // Animation Loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -180,6 +218,7 @@ function animate() {
     handleBubbles();
     player1.update();
     player1.draw();
+    handleEnemy()
     ctx.fillStyle = 'black';
     ctx.fillText('Score: ' + score, 10, 50);
     gameFrame++;
