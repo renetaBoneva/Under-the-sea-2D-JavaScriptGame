@@ -12,7 +12,7 @@ let isGameOver = false;
 
 // Mouse Interactivity
 let canvasPosition = canvas.getBoundingClientRect();
-const mouse = {
+let mouse = {
     X: canvas.width / 2,
     Y: canvas.height / 2,
     click: false
@@ -85,7 +85,7 @@ class Player {
         ctx.restore();
     }
 }
-const player1 = new Player();
+let player1 = new Player();
 
 // Bubbles
 let bubbleArray = [];
@@ -147,6 +147,9 @@ function handleBubbles() {
                 bubbleArray[i].counted = true;
                 bubbleArray.splice(i, 1);
                 i--;
+                if (score >= 10) {
+                    handleReachedScore();
+                }
             }
         }
     }
@@ -235,7 +238,7 @@ class Enemy {
         const dy = this.y - player1.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < this.radius + player1.radius -20) {
+        if (distance < this.radius + player1.radius - 30) {
             handleGameOver();
         }
 
@@ -255,6 +258,13 @@ function handleGameOver() {
     isGameOver = true;
 }
 
+function handleReachedScore() {    
+    ctx.fillStyle = 'white'
+    ctx.fillText("LEVEL UP", 200, 200);
+    ctx.fillText("You reached score: " + score, 150, 250);
+    isGameOver = true;
+}
+
 // Animation Loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -266,10 +276,27 @@ function animate() {
     ctx.fillStyle = 'black';
     ctx.fillText('Score: ' + score, 10, 50);
     gameFrame++;
-    if(!isGameOver) requestAnimationFrame(animate);
+
+    if (!isGameOver) {
+        requestAnimationFrame(animate);
+    }
 }
 animate()
 
 window.addEventListener("resize", () => {
     canvasPosition = canvas.getBoundingClientRect();
+})
+
+// Restart btn
+const restartBtn = document.querySelector('#restartBtn');
+restartBtn.addEventListener('click', () => {
+    mouse = {
+        X: canvas.width / 2,
+        Y: canvas.height / 2,
+        click: false
+    }
+    player1 = new Player();
+    score = 0
+    isGameOver = false;
+    requestAnimationFrame(animate)
 })
