@@ -10,6 +10,9 @@ ctx.font = '40px Georgia';
 let gameSpeed = 1;
 let isGameOver = false;
 
+const messageParagraph = document.querySelector('p#message');
+messageParagraph.textContent = `Score: ${score}`
+
 // Mouse Interactivity
 let canvasPosition = canvas.getBoundingClientRect();
 let mouse = {
@@ -144,11 +147,13 @@ function handleBubbles() {
                 }
 
                 score++;
+                messageParagraph.textContent = `Score: ${score}`
                 bubbleArray[i].counted = true;
                 bubbleArray.splice(i, 1);
                 i--;
-                if (score >= 10) {
+                if (score >= 5) {
                     handleReachedScore();
+                    break;
                 }
             }
         }
@@ -244,7 +249,7 @@ class Enemy {
 
     }
 }
-const enemy1 = new Enemy();
+let enemy1 = new Enemy();
 function handleEnemy() {
     enemy1.update();
     enemy1.draw();
@@ -253,15 +258,15 @@ function handleEnemy() {
 
 function handleGameOver() {
     ctx.fillStyle = 'white'
-    ctx.fillText("GAME OVER", 200, 200);
-    ctx.fillText("You reached score: " + score, 150, 250);
+    ctx.fillText("GAME OVER", 300, 200);
+    ctx.fillText("You reached score: " + score, 250, 250);
     isGameOver = true;
 }
 
 function handleReachedScore() {    
     ctx.fillStyle = 'white'
-    ctx.fillText("LEVEL UP", 200, 200);
-    ctx.fillText("You reached score: " + score, 150, 250);
+    ctx.fillText("LEVEL UP", 320, 200);
+    ctx.fillText("You reached score: " + score, 250, 250);
     isGameOver = true;
 }
 
@@ -274,7 +279,6 @@ function animate() {
     player1.draw();
     handleEnemy()
     ctx.fillStyle = 'black';
-    ctx.fillText('Score: ' + score, 10, 50);
     gameFrame++;
 
     if (!isGameOver) {
@@ -296,7 +300,9 @@ restartBtn.addEventListener('click', () => {
         click: false
     }
     player1 = new Player();
+    enemy1 = new Enemy();
     score = 0
     isGameOver = false;
+    gameSpeed=1;
     requestAnimationFrame(animate)
 })
